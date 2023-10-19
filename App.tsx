@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View, FlatList, Modal } from 'react-native';
 import colors from './Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,6 +15,10 @@ export default class App extends React.Component {
 
   toggleAddTodoModal() {
     this.setState({ addTodoVisible: !this.state.addTodoVisible })
+  }
+
+  renderList = (list: any) => {
+    return <TodoList list={list} />
   }
 
   render(){
@@ -46,7 +50,7 @@ export default class App extends React.Component {
                 keyExtractor={item=> item.name}
                 horizontal={ true }
                 showsHorizontalScrollIndicator={ false }
-                renderItem={({ item }) => <TodoList list={item} />}
+                renderItem={({ item }) => this.renderList(item) }
               />
           </View>
       </View>

@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getAuth, signInAnonymously, onAuthStateChanged, updateCurrentUser } from "firebase/auth";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBB78d8h_npkSKsApMvJTdcF5_L-x4h55s",
@@ -33,7 +33,7 @@ class Fire {
             } else {
                 signInAnonymously(auth)
                     .then(() => {
-
+                        
                     })
                     .catch(error => {
                         callback(error);
@@ -44,15 +44,21 @@ class Fire {
 
     async getLists(callback) {
 
-        const app = initializeApp(firebaseConfig);
+        const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        let ref = collection(db, 'users');
-        const todoSnapshot = await getDocs(ref);
-        const todoList = todoSnapshot(this.userId);
 
-        return todoList;
+        const querySnapshot = await getDocs(collection(db, "users"));
 
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+        });
+        ///2F1A4U2UQQRVZlRYdJuWYRukn9UtG3/lists
 
+    }
+
+    get userId() {
+
+        return getAuth().currentUser.uid;
     }
 
 }

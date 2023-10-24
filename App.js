@@ -12,16 +12,23 @@ export default class App extends React.Component {
 
   state = {
     addTodoVisible: false,
-    lists: tempData,
-    user: {}
+    lists: [],
+    user: {},
+    loading: true
   }
 
   componentDidMount() {
-    new Fire((error, user) => {
-      console.log("en la pantalla",user.uid);
+    const firebase = new Fire((error, user) => {
       if( error ){
         return console.log("Ocurrio un Error")
       }
+
+      firebase.getLists(lists => {
+
+        this.setState({lists, user}, () => {
+          this.setState({ loading: false })
+        })
+      })
 
       this.setState({user});
     });

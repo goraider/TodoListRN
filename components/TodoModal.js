@@ -95,7 +95,7 @@ export default class TodoModal extends React.Component {
                         <FlatList 
                             data={ list.todos }
                             renderItem={ ({ item, index }) => this.renderTodo(item, index) }
-                            keyExtractor={ item => item.title }
+                            keyExtractor={ (_, index) => index.toString() }
                             contentContainerStyle={{ paddingHorizontal: 32, paddingVertical: 64, color: colors.black }}
                             showsVerticalScrollIndicator={ false }
                         />
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
       },
       input: {
         flex: 1,
-        height: 48,
+        height: 40,
         borderWidth: StyleSheet.hairlineWidth,
         borderRadius: 6,
         marginRight: 8,

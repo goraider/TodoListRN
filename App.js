@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, FlatList, Modal } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, FlatList, Modal, ActivityIndicator } from 'react-native';
 import colors from './Colors';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import tempData from './tempData';
@@ -38,6 +38,11 @@ export default class App extends React.Component {
   toggleAddTodoModal() {
     this.setState({ addTodoVisible: !this.state.addTodoVisible })
   }
+  componentWillUnmount(){
+    const firebase = new Fire();
+
+    firebase.datach();
+  }
 
   renderList = (list) => {
     return <TodoList list={list} updateList={ this.updateList } />
@@ -58,6 +63,15 @@ export default class App extends React.Component {
   };
 
   render(){
+    if( this.state.loading ){
+
+      return(
+        <View style={styles.container}>
+          <ActivityIndicator size='large' color={colors.blue} />
+        </View>
+      )
+
+    }
      return(
       <View style={styles.container}>
         <Modal animationType='slide'
@@ -86,7 +100,7 @@ export default class App extends React.Component {
           <View style={{ height: 275, paddingLeft: 32 }}>
               <FlatList
                 data={this.state.lists}
-                keyExtractor={item=> item.name}
+                keyExtractor={item=> item.id.toString()}
                 horizontal={ true }
                 showsHorizontalScrollIndicator={ false }
                 renderItem={ ({ item }) => this.renderList(item) }

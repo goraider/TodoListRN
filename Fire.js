@@ -1,6 +1,8 @@
 import * as firebase from "firebase/app";
-import { getAuth, signInAnonymously, onAuthStateChanged, updateCurrentUser } from "firebase/auth";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyBB78d8h_npkSKsApMvJTdcF5_L-x4h55s",
@@ -19,7 +21,7 @@ class Fire {
 
     init( callback ){
         if( !firebase.getApps.length ){
-            firebase.initializeApp(firebaseConfig);
+            initializeApp(firebaseConfig);
         }
         //apps.length
 
@@ -47,18 +49,31 @@ class Fire {
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const querySnapshot = await getDocs(collection(db, "users"));
+        const querySnapshot = await getDocs(collection(db, "/users", "/1A4U2UQQRVZlRYdJuWYRukn9UtG3", "/lists"));
+        
+        lists = [];
 
-        querySnapshot.forEach((doc) => {
-          console.log(doc.id, " => ", doc.data());
+        querySnapshot.forEach(doc => {
+
+            lists.push({ id: doc.id, ...doc.data() });
+            
         });
-        ///2F1A4U2UQQRVZlRYdJuWYRukn9UtG3/lists
 
+        if(callback){
+
+            callback(lists);
+        }
+        
+        
     }
 
     get userId() {
 
         return getAuth().currentUser.uid;
+    }
+
+    datach() {
+        this.unsubscribe;
     }
 
 }

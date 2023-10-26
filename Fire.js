@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 
 
 const firebaseConfig = {
@@ -65,6 +65,15 @@ class Fire {
         }
         
         
+    }
+
+    async addList(list) {
+
+        console.log(list);
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        await addDoc(collection(db, "/users", "/1A4U2UQQRVZlRYdJuWYRukn9UtG3", "/lists"), list);
     }
 
     get userId() {

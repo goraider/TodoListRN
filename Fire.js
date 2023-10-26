@@ -1,7 +1,9 @@
 import * as firebase from "firebase/app";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInAnonymously, onAuthStateChanged, initializeAuth, getReactNativePersistence  } from "firebase/auth";
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, un, onSnapshot } from 'firebase/firestore';
 
 
 const firebaseConfig = {
@@ -14,6 +16,7 @@ const firebaseConfig = {
 };
 
 
+
 class Fire {
     constructor(callback){
         this.init(callback)
@@ -21,16 +24,18 @@ class Fire {
 
     init( callback ){
         if( !firebase.getApps.length ){
-            initializeApp(firebaseConfig);
+            const app = initializeApp(firebaseConfig);
+            initializeAuth(app, {
+                persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+            });
         }
         //apps.length
 
         const auth = getAuth();
-
         
         onAuthStateChanged(auth, (user) => {
             if( user ){
-                callback(null, user);
+                callback && callback(null, user);
                 
             } else {
                 signInAnonymously(auth)
@@ -38,7 +43,7 @@ class Fire {
                         
                     })
                     .catch(error => {
-                        callback(error);
+                        callback && callback(error);
                     });
             }
         });
@@ -59,10 +64,7 @@ class Fire {
             
         });
 
-        if(callback){
-
-            callback(lists);
-        }
+            callback && callback(lists);
         
         
     }
@@ -81,8 +83,13 @@ class Fire {
         return getAuth().currentUser.uid;
     }
 
-    datach() {
-        this.unsubscribe;
+    get datach() {
+
+        const unsub = collection("/users", "/1A4U2UQQRVZlRYdJuWYRukn9UtG3", "/lists").onSnapshot(querySnapshot => {
+            console.log(querySnapshot);
+        });
+
+        return unsub;
     }
 
 }

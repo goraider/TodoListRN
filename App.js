@@ -39,9 +39,10 @@ export default class App extends React.Component {
     this.setState({ addTodoVisible: !this.state.addTodoVisible })
   }
   componentWillUnmount(){
+    
     const firebase = new Fire();
+    // firebase.datach();
 
-    firebase.datach();
   }
 
   renderList = (list) => {

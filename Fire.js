@@ -3,7 +3,7 @@ import { getAuth, signInAnonymously, onAuthStateChanged, initializeAuth, getReac
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc, un, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, getDoc, addDoc, updateDoc, onSnapshot, doc } from 'firebase/firestore';
 
 
 const firebaseConfig = {
@@ -23,11 +23,14 @@ class Fire {
     }
 
     init( callback ){
-        if( !firebase.getApps.length ){
+
+        if( firebase.getApps().length === 0 ){
             const app = initializeApp(firebaseConfig);
             initializeAuth(app, {
                 persistence: getReactNativePersistence(ReactNativeAsyncStorage)
             });
+        }else{
+            firebase.getApp();
         }
         //apps.length
 
@@ -71,11 +74,26 @@ class Fire {
 
     async addList(list) {
 
-        console.log(list);
-
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
         await addDoc(collection(db, "/users", "/1A4U2UQQRVZlRYdJuWYRukn9UtG3", "/lists"), list);
+    }
+
+    async updateList(list){
+
+        console.log("acaaaaaaaaaaaa",list.id);
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const ref = doc(db, "/users", "/1A4U2UQQRVZlRYdJuWYRukn9UtG3", "/lists", list.id);
+
+        console.log("traaaeerrr",ref);
+
+        await updateDoc(ref, {
+            list
+        });
+
     }
 
     get userId() {

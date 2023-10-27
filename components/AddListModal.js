@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, TextInput } from "react-native";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import colors from "../Colors";
-import tempData from "../tempData";
 
 export default class AddListModal extends React.Component {
 

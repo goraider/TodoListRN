@@ -81,14 +81,10 @@ class Fire {
 
     async updateList(list){
 
-        console.log("acaaaaaaaaaaaa",list.id);
-
         const app = firebase.initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         const ref = doc(db, "/users", "/1A4U2UQQRVZlRYdJuWYRukn9UtG3", "/lists", list.id);
-
-        console.log("traaaeerrr",ref);
 
         await updateDoc(ref, {
             list

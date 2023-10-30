@@ -26,17 +26,29 @@ export default class TodoModal extends React.Component {
 
     addTodo = () => {
         let list = this.props.list;
-        list.todos.push({
-            title: this.state.newTodo,
-            completed: false
-        });
 
-        this.props.updateList(list);
+        if( !list.todos.some(todo => todo.title === this.state.newTodo)){
+
+            list.todos.push({
+                title: this.state.newTodo,
+                completed: false
+            });
+    
+            this.props.updateList(list);
+
+        }
+
         this.setState({ newTodo: "" });
-
         Keyboard.dismiss();
 
 
+    }
+    deleteTodo = index => {
+        let list = this.props.list;
+
+        list.todos.splice( index, 1);
+
+        this.props.updateList(list);
     }
 
     renderTodo = (todo, index) => {
@@ -70,10 +82,22 @@ export default class TodoModal extends React.Component {
     }
 
     rightActions = (dragX, index) => {
+
+        const scale = dragX.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [1, 0.9],
+            extrapolate: "clamp"
+        });
+        const opacity = dragX.interpolate({
+            inputRange: [-100, -20, 0],
+            outputRange: [1, 0.9, 0],
+            extrapolate: "clamp"
+        });
+
         return(
-            <TouchableOpacity>
-                <Animated.View style={ styles.deleteButton }>
-                    <Animated.Text style={{ color: colors.white,  fontWeight: "800"}}>
+            <TouchableOpacity onPress={ () => this.deleteTodo( index ) }>
+                <Animated.View style={[ styles.deleteButton, {opacity: opacity}] }>
+                    <Animated.Text style={{ color: colors.white,  fontWeight: "800", transform:[{scale}] }}>
                         Delete
                     </Animated.Text>
                 </Animated.View>
@@ -108,12 +132,13 @@ export default class TodoModal extends React.Component {
                         </View>
                     </View>
 
-                    <View style={[styles.section, {flex: 3}]}>
+                    <View style={[styles.section, {flex: 3, marginVertical: 16 }]}>
                         <FlatList 
                             data={ list.todos }
                             renderItem={ ({ item, index }) => this.renderTodo(item, index) }
-                            keyExtractor={ (_, index) => index.toString() }
-                            contentContainerStyle={{ paddingHorizontal: 32, paddingVertical: 40, color: colors.black }}
+                            keyExtractor={ item => item.title }
+                            // keyExtractor={ (_, index) => index.toString() }
+                            // contentContainerStyle={{ paddingHorizontal: 32, paddingVertical: 40, color: colors.black }}
                             showsVerticalScrollIndicator={ false }
                         />
                     </View>
@@ -154,7 +179,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         marginLeft: 64,
         borderBottomWidth: 3,
-        padding: 18
+        padding: 16
       },
       title: {
         fontSize: 30,
